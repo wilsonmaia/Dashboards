@@ -1,0 +1,267 @@
+---
+title: "Índice COVID"
+output: 
+ flexdashboard::flex_dashboard:
+    social: menu
+    theme: united
+    storyboard: True
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+```{r warning=FALSE, include=FALSE}
+library(tidyverse)
+library(plotly)
+library(geobr)
+library(ggthemes)
+
+dados <- read.csv2("C:/Users/wilso/Desktop/UNICAMP/proj_INDICADOR/indice.csv")
+states <- read_state()
+
+
+```
+Sidebar {.sidebar}
+======================================================================
+
+**INFORMAÇÕES IMPORTANTES:**
+
+- Este dashboard foi a proposta de criação de um índice avaliativo para o risco de óbitos por COVID-19 nos Estados brasileiros;
+- Os dados utilizados não eram os mais recentes disponíveis;
+- Não é recomendado utilizar essas informações para qualquer tipo de planejamento, pois elas têm caráter apenas ilustrativo.
+
+
+**Mar/2020**
+
+
+
+
+
+***Contato:***
+ubydata@gmail.com
+
+
+Introdução
+======================================================================
+Row {data-width=350}{.tabset}
+-----------------------------------------------------------------------
+
+### Introdução
+
+- O alastramento da Sars-CoV-2 sobrecarregou os sistemas de saúde do mundo de maneira indistinta com algumas poucas exceções. O ritmo de espalhamento da doença iniciou uma corrida por tratamentos e medidas de gestão que atenuassem o seu avanço de forma a haver um preparo dos sistemas de saúde para atender a demanda de pacientes.
+
+- A ocorrência de doenças em um espaço não ocorre de maneira necessariamente homogênea. O entendimento dos determinantes de saúde que interagem e influenciam no número de mortes e complicações ainda está em evolução. Porém, sabe-se que a pirâmide etária dos países afetados, questões de infraestrutura, como o número de ventiladores mecânicos, a prevalência de doenças crônicas nas populações e, possivelmente, as condições de moradia, como aglomerados urbanos (favelas), podem ser fatores decisivos para a ocorrência de um número maior de mortes.
+
+- A redução de óbitos e internações depende de políticas públicas que atuem com critérios objetivos para a melhoria do Sistema Único de Saúde nas três esferas de Governo.  Diante disso, um grupo de indicadores pode ser sintetizado de forma a simplificar o entendimento do quadro geral de uma determinada região.
+
+### Dados e Fontes
+- A proporção de ventiladores mecânicos foi calculada com dados provenientes do DataSUS (dez 2019).
+- Os aglomerados urbanos foram retirados do Instituto de pesquisa econômica (IPEA)(dados de 2014).
+- A proporção de pessoas com doenças crônicas foi retirada do site de big data da Fiocruz sobre Covid-19, assim como a proporção de idosos.
+
+- **Respiradores: por 10 000 habitantes
+- **Aglomerados urbanos**: Mais de duas pessoas por cômodo (% de domicílios).
+- **Doenças crônicas**: Proporção de pessoas com ao menos uma doenças crônica
+- **Idosos**: Proporção de idosos
+
+
+|Estados	|RESPIRADORES	|AGLOMERADOS	|D_CRÔNICAS	|IDOSOS|
+|---------|-------------|-------------|-----------|------|
+|    RS	  |    3.048	  |     0.05    |  21.09	  |  21.2|
+|    RJ	  |    4.571	  |     0.10    |  20.38	  |  20.93|
+|    AM	  |    2.169	  |     0.31    |  13.35	  |  11.35|
+|    AP	  |    1.111	  |     0.26    |  11.05	  |  12.17|
+|    AC	  |    1.723	  |     0.30    |  13.61	  |  12.53|
+|    MS	  |    3.264	  |     0.08    |  20.96	  |  14.93|
+|    MG	  |    2.989	  |     0.04    |  20.65	  |  19.04|
+|    PR	  |    3.301	  |     0.04    |  20.8	    |  17.2|
+|    PI	  |    1.421	  |     0.09    |  16.71	  |  18.83|
+|    SP	  |    4.096	  |     0.11    |  20.18	  |  19.86|
+|    GO	  |    2.412	  |     0.05    |  20.28	  |  16.44|
+|    RN	  |    2.179	  |     0.06    |  19.03	  |  17.53|
+|    PA	  |    1.780	  |     0.27    |  11.94	  |  13.72|
+|    AL	  |    1.645	  |     0.10    |  17.04	  |  16.31|
+|    PB	  |    2.290	  |     0.08    |  17.45	  |  18.41|
+|    CE	  |    2.277	  |     0.10    |  16	      |  19.04|
+|    MA	  |    1.501	  |     0.18    |  12.92	  |  14.67|
+|    SE	  |    2.245	  |     0.06    |  18.9	    |  15.98|
+|    TO	  |    2.066	  |     0.11    |  17.61	  |  15.95|
+|    PE	  |    3.043	  |     0.08    |  18.99	  |  17.33|
+|    BA	  |    2.128	  |     0.07    |  17.22	  |  16.37|
+|    SC	  |    2.946	  |     0.04    |  19.33	  |  15.61|
+|    RR	  |    2.493	  |     0.25    |  12.33	  |  10.08|
+|    ES	  |    3.787	  |     0.06    |  17.39	  |  16.86|
+|    RO	  |    2.768	  |     0.10    |  16.84	  |  12.86|
+|    MT	  |    4.104	  |     0.08    |  17.87	  |  15.34|
+|    DF	  |    6.666	  |     0.07    |  19.03	  |  14.78|
+    
+
+
+
+### Cálculo
+
+- O cálculo do índice é semelhante ao do Índice de Desenvolvimento Humano (IDH), assim como a sua interpretação. Valores mais próximos de 1 indicam que a combinação dos determinantes pode contribuir para desfechos mais favoráveis, enquanto valores mais próximos de 0 sugerem uma combinação de determinantes desfavorável ao desfechos da Covid-19.
+
+- Os dados foram normalizados para ficarem em uma escala de 0 a 1.
+
+$$ 
+z = \frac{x - min(x)}{max(x)-min(x)}
+$$
+- Utilizou-se a média geométrica para que todos os componentes tivessem o mesmo peso.
+
+$$ 
+\sqrt[n]{X1+X2+X3 ...Xn}
+$$
+
+
+
+Índice & Mapa
+======================================================================
+
+Row {data-width=350}{.tabset}
+-----------------------------------------------------------------------
+### Brasil
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+# Carregando dados
+
+
+states <- left_join(dados, states, by=c('U_FEDERATIVA'='abbrev_state'))
+
+
+take <- as_tibble(states)
+no_axis <- theme(axis.title=element_blank(),
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank())
+
+p_state<- ggplot(data = take, aes(geometry=geom))+
+  geom_sf(aes(fill=INDEX), color= NA, size=.15)+
+  labs(subtitle="Índice COVID-19", size=8) +
+  scale_fill_distiller(palette = "Blues", name="", limits = c(.0,.57)) +
+  theme_minimal()+
+  no_axis
+ggplotly(p_state)
+
+```
+
+
+
+
+
+### Região Norte
+```{r}
+norte <- dplyr::filter(states, U_FEDERATIVA %in% c('AC', 'AP', 'AM','PA','RR','RO','TO'))
+no_axis <- theme(axis.title=element_blank(),
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank())
+
+p_state<- ggplot(data = norte, aes(geometry=geom))+
+  geom_sf(aes(fill=INDEX), color= NA, size=.15)+
+  labs(subtitle="Índice COVID-19", size=8) +
+  scale_fill_distiller(palette = "Blues", name="", limits = c(.0,.57)) +
+  theme_minimal()+
+  no_axis
+ggplotly(p_state)
+```
+
+
+
+### Região Nordeste
+
+```{r}
+nordeste <- dplyr::filter(states, U_FEDERATIVA %in% c('MA', 'PI', 'CE','RN','BA','PB','SE','AL','PE'))
+no_axis <- theme(axis.title=element_blank(),
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank())
+
+p_state<- ggplot(data = nordeste, aes(geometry=geom))+
+  geom_sf(aes(fill=INDEX), color= NA, size=.15)+
+  labs(subtitle="Índice COVID-19", size=8) +
+  scale_fill_distiller(palette = "Blues", name="", limits = c(.0,.57)) +
+  theme_minimal()+
+  no_axis
+ggplotly(p_state)
+
+```
+
+### Região Centro-oeste
+```{r}
+centro <- dplyr::filter(states, U_FEDERATIVA %in% c('GO', 'DF', 'MT','MS'))
+no_axis <- theme(axis.title=element_blank(),
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank())
+
+p_state<- ggplot(data = centro, aes(geometry=geom))+
+  geom_sf(aes(fill=INDEX), color= NA, size=.15)+
+  labs(subtitle="Índice COVID-19", size=8) +
+  scale_fill_distiller(palette = "Blues", name="", limits = c(.0,.57)) +
+  theme_minimal()+
+  no_axis
+ggplotly(p_state)
+```
+
+### Região Sudeste
+```{r}
+sudeste <- dplyr::filter(states, U_FEDERATIVA %in% c('SP', 'MG', 'ES','RJ'))
+no_axis <- theme(axis.title=element_blank(),
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank())
+
+p_state<- ggplot(data = sudeste, aes(geometry=geom))+
+  geom_sf(aes(fill=INDEX), color= NA, size=.15)+
+  labs(subtitle="Índice COVID-19", size=8) +
+  scale_fill_distiller(palette = "Blues", name="", limits = c(.0,.57)) +
+  theme_minimal()+
+  no_axis
+ggplotly(p_state)
+```
+
+### Região Sul
+```{r}
+sul <- dplyr::filter(states, U_FEDERATIVA %in% c('SC', 'PR', 'RS'))
+no_axis <- theme(axis.title=element_blank(),
+                 axis.text=element_blank(),
+                 axis.ticks=element_blank())
+
+p_state<- ggplot(data = sul, aes(geometry=geom))+
+  geom_sf(aes(fill=INDEX), color= NA, size=.15)+
+  labs(subtitle="Índice COVID-19", size=8) +
+  scale_fill_distiller(palette = "Blues", name="", limits = c(.0,.57)) +
+  theme_minimal()+
+  no_axis
+ggplotly(p_state)
+```
+
+### Tabela
+
+|Unidade Federativa |Índice    |
+|-------------------|----------|
+|RS                 |0.07576147|
+|RJ                 |0.17001781|
+|AM                 |0.18989091|
+|AP                 |0.20080216|
+|AC                 |0.21490613|
+|MS                 |0.22148982|
+|MG                 |0.23068806|
+|PR                 |0.25093939|
+|PI                 |0.25329690|
+|SP                 |0.25738581|
+|GO                 |0.29694186|
+|RN                 |0.32893534|
+|PA                 |0.33157450|
+|AL                 |0.33657200|
+|PB                 |0.35564245|
+|CE                 |0.35665340|
+|MA                 |0.35811962|
+|SE                 |0.37007264|
+|TO                 |0.37723137|
+|PE                 |0.38243258|
+|BA                 |0.40675419|
+|SC                 |0.41305756|
+|RR                 |0.46970945|
+|ES                 |0.50304379|
+|RO                 |0.52057786|
+|MT                 |0.52472761|
+|DF                 |0.56723631|
+
