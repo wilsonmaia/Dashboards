@@ -1,0 +1,111 @@
+---
+title: "Câncer de próstata"
+output: 
+ flexdashboard::flex_dashboard:
+    social: menu
+    theme: simplex
+    
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+```{r warning=FALSE, include=FALSE}
+require(tidyverse)
+require(plotly)
+prostata <- read.csv("~/DIR_R/CANCER/PORTFOLio/prostata.csv", encoding="UTF-8")
+
+brazil = filter(prostata, location %in% 'Brazil')
+norte = filter(prostata, location %in% c('Amapá','Amazonas','Acre','Pará', 'Rondônia','Roraima','Tocantins'))
+nordeste = filter(prostata, location %in% c('Maranhão','Piauí','Ceará','Rio Grande do Norte','Alagoas','Pernambuco','Sergipe','Paraíba','Bahia'))
+centrooeste = filter(prostata, location %in% c('Goiás','Mato Grosso','Mato Grosso do Sul','Distrito Federal'))
+sudeste = filter(prostata, location %in% c('Minas Gerais','São Paulo','Espírito Santo','Rio de Janeiro'))
+sul = filter(prostata, location %in% c('Paraná', 'Santa Catarina', 'Rio Grande do Sul'))
+
+```
+Sidebar {.sidebar}
+======================================================================
+***Taxa de óbitos***
+Óbitos de câncer de próstata por 100 mil habitantes, ajustados por idade, nos estados brasileiros no período entre 1990 e 2017.
+
+
+Contato: ubydata@gmail.com
+
+***Fonte:***
+
+The Institute for Health Metrics and Evaluation (IHME).
+
+
+
+Tendência
+======================================================================
+
+Row {data-width=350}{.tabset}
+-----------------------------------------------------------------------
+
+### Região Norte
+
+```{r}
+require(ggplot2)
+ggplotly(ggplot(data = norte)+
+  geom_smooth(aes(x = year, y = val), method = 'loess', color = 'red', size = .5, alpha=0.50, se = T)+
+  geom_point(aes(x = year, y = val),size=.9, alpha=.5)+
+  theme_minimal()+
+    ylim(10,45)+
+    facet_wrap(~location))
+```
+
+
+### Região Nordeste
+
+```{r}
+
+ggplotly(ggplot(data = nordeste)+
+  geom_smooth(aes(x = year, y = val), method = 'loess', color = 'red', size = .5, alpha=0.50, se = T)+
+  geom_point(aes(x = year, y = val), size=0.9, alpha=.5)+
+  theme_minimal()+
+    ylim(10,45)+
+  facet_wrap(~location))
+```
+
+### Região Centro-Oeste
+
+```{r}
+ggplotly(ggplot(data = centrooeste)+
+  geom_smooth(aes(x = year, y = val), method = 'loess', color = 'red', size = .5, alpha=0.50, se = T)+
+  geom_point(aes(x = year, y = val),size=.9, alpha=.5)+
+  theme_minimal()+
+    ylim(10,45)+
+  facet_wrap(~location))
+```
+
+### Região Sudeste
+```{r}
+ggplotly(ggplot(data = sudeste)+
+  geom_smooth(aes(x = year, y = val), method = 'loess', color = 'red', size = .5, alpha=0.50, se = T)+
+  geom_point(aes(x = year, y = val),size=.9, alpha=.5)+
+  theme_minimal()+
+    ylim(10,45)+
+  facet_wrap(~location))
+```
+
+### Região Sul
+```{r}
+ggplotly(ggplot(data = sul)+
+  geom_smooth(aes(x = year, y = val), method = 'loess', color = 'red', size = .5, alpha=0.50, se = T)+
+  geom_point(aes(x = year, y = val),size=.9, alpha=.5)+
+  theme_minimal()+
+    ylim(10,45)+
+  facet_wrap(~location))
+```
+
+### Brasil
+```{r}
+ggplotly(ggplot(data = brazil)+
+  geom_smooth(aes(x = year, y = val), method = 'loess', color = 'red', size = .5, alpha=0.50, se = T)+
+  geom_point(aes(x = year, y = val),size=.9, alpha=.5)+
+  theme_minimal()+
+  ylim(10,45))
+```
+
